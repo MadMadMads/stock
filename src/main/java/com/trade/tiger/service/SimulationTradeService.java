@@ -26,7 +26,6 @@ public class SimulationTradeService {
     TradeRuleMapper ruleMapper;
 
     public boolean addTrade(TradeRule tradeRule) {
-        tradeRule.setType(TradeEnums.getCodeByDesc("tiger"));
         tradeRule.setCreateTime(new Date());
         tradeRule.setUpdateTime(new Date());
         return ruleMapper.insert(tradeRule) > 0 ? true : false;
