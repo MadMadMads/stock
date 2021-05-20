@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.trade.tiger.mapper.TradeRuleMapper">
+  <resultMap id="BaseResultMap" type="com.trade.tiger.domain.TradeRule">
+    <!--@mbg.generated-->
+    <!--@Table trade_rule-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="stock_code" jdbcType="VARCHAR" property="stockCode" />
+    <result column="strategy_id" jdbcType="INTEGER" property="strategyId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="value" jdbcType="DECIMAL" property="value" />
+    <result column="volume" jdbcType="INTEGER" property="volume" />
+    <result column="open_price" jdbcType="DECIMAL" property="openPrice" />
+    <result column="highest_price" jdbcType="DECIMAL" property="highestPrice" />
+    <result column="lowest_price" jdbcType="DECIMAL" property="lowestPrice" />
+    <result column="state" jdbcType="TINYINT" property="state" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, stock_code, strategy_id, user_id, `type`, `value`, volume, open_price, highest_price, 
+    lowest_price, `state`, description, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from trade_rule
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from trade_rule
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.trade.tiger.domain.TradeRule" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into trade_rule (stock_code, strategy_id, user_id, 
+      `type`, `value`, volume, 
+      open_price, highest_price, lowest_price, 
+      `state`, description, create_time, 
+      update_time)
+    values (#{stockCode,jdbcType=VARCHAR}, #{strategyId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{type,jdbcType=TINYINT}, #{value,jdbcType=DECIMAL}, #{volume,jdbcType=INTEGER}, 
+      #{openPrice,jdbcType=DECIMAL}, #{highestPrice,jdbcType=DECIMAL}, #{lowestPrice,jdbcType=DECIMAL}, 
+      #{state,jdbcType=TINYINT}, #{description,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.trade.tiger.domain.TradeRule" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into trade_rule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="stockCode != null">
+        stock_code,
+      </if>
+      <if test="strategyId != null">
+        strategy_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="type != null">
+        `type`,
+      </if>
+      <if test="value != null">
+        `value`,
+      </if>
+      <if test="volume != null">
+        volume,
+      </if>
+      <if test="openPrice != null">
+        open_price,
+      </if>
+      <if test="highestPrice != null">
+        highest_price,
+      </if>
+      <if test="lowestPrice != null">
+        lowest_price,
+      </if>
+      <if test="state != null">
+        `state`,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="stockCode != null">
+        #{stockCode,jdbcType=VARCHAR},
+      </if>
+      <if test="strategyId != null">
+        #{strategyId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="value != null">
+        #{value,jdbcType=DECIMAL},
+      </if>
+      <if test="volume != null">
+        #{volume,jdbcType=INTEGER},
+      </if>
+      <if test="openPrice != null">
+        #{openPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="highestPrice != null">
+        #{highestPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="lowestPrice != null">
+        #{lowestPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=TINYINT},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.trade.tiger.domain.TradeRule">
+    <!--@mbg.generated-->
+    update trade_rule
+    <set>
+      <if test="stockCode != null">
+        stock_code = #{stockCode,jdbcType=VARCHAR},
+      </if>
+      <if test="strategyId != null">
+        strategy_id = #{strategyId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        `type` = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="value != null">
+        `value` = #{value,jdbcType=DECIMAL},
+      </if>
+      <if test="volume != null">
+        volume = #{volume,jdbcType=INTEGER},
+      </if>
+      <if test="openPrice != null">
+        open_price = #{openPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="highestPrice != null">
+        highest_price = #{highestPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="lowestPrice != null">
+        lowest_price = #{lowestPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null">
+        `state` = #{state,jdbcType=TINYINT},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.trade.tiger.domain.TradeRule">
+    <!--@mbg.generated-->
+    update trade_rule
+    set stock_code = #{stockCode,jdbcType=VARCHAR},
+      strategy_id = #{strategyId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      `type` = #{type,jdbcType=TINYINT},
+      `value` = #{value,jdbcType=DECIMAL},
+      volume = #{volume,jdbcType=INTEGER},
+      open_price = #{openPrice,jdbcType=DECIMAL},
+      highest_price = #{highestPrice,jdbcType=DECIMAL},
+      lowest_price = #{lowestPrice,jdbcType=DECIMAL},
+      `state` = #{state,jdbcType=TINYINT},
+      description = #{description,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateBatchSelective" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update trade_rule
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="stock_code = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.stockCode != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.stockCode,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="strategy_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.strategyId != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.strategyId,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="user_id = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.userId != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.userId,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`type` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.type != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.type,jdbcType=TINYINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`value` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.value != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.value,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="volume = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.volume != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.volume,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="open_price = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.openPrice != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.openPrice,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="highest_price = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.highestPrice != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.highestPrice,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="lowest_price = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.lowestPrice != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.lowestPrice,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`state` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.state != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.state,jdbcType=TINYINT}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="description = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.description != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.description,jdbcType=VARCHAR}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="create_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.createTime != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.createTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="update_time = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.updateTime != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.updateTime,jdbcType=TIMESTAMP}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=INTEGER}
+    </foreach>
+  </update>
+  <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.trade.tiger.domain.TradeRule" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into trade_rule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      stock_code,
+      strategy_id,
+      user_id,
+      `type`,
+      `value`,
+      volume,
+      open_price,
+      highest_price,
+      lowest_price,
+      `state`,
+      description,
+      create_time,
+      update_time,
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      #{stockCode,jdbcType=VARCHAR},
+      #{strategyId,jdbcType=INTEGER},
+      #{userId,jdbcType=INTEGER},
+      #{type,jdbcType=TINYINT},
+      #{value,jdbcType=DECIMAL},
+      #{volume,jdbcType=INTEGER},
+      #{openPrice,jdbcType=DECIMAL},
+      #{highestPrice,jdbcType=DECIMAL},
+      #{lowestPrice,jdbcType=DECIMAL},
+      #{state,jdbcType=TINYINT},
+      #{description,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP},
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=INTEGER},
+      </if>
+      stock_code = #{stockCode,jdbcType=VARCHAR},
+      strategy_id = #{strategyId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      `type` = #{type,jdbcType=TINYINT},
+      `value` = #{value,jdbcType=DECIMAL},
+      volume = #{volume,jdbcType=INTEGER},
+      open_price = #{openPrice,jdbcType=DECIMAL},
+      highest_price = #{highestPrice,jdbcType=DECIMAL},
+      lowest_price = #{lowestPrice,jdbcType=DECIMAL},
+      `state` = #{state,jdbcType=TINYINT},
+      description = #{description,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+    </trim>
+  </insert>
+  <insert id="insertOrUpdateSelective" keyColumn="id" keyProperty="id" parameterType="com.trade.tiger.domain.TradeRule" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into trade_rule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="stockCode != null">
+        stock_code,
+      </if>
+      <if test="strategyId != null">
+        strategy_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="type != null">
+        `type`,
+      </if>
+      <if test="value != null">
+        `value`,
+      </if>
+      <if test="volume != null">
+        volume,
+      </if>
+      <if test="openPrice != null">
+        open_price,
+      </if>
+      <if test="highestPrice != null">
+        highest_price,
+      </if>
+      <if test="lowestPrice != null">
+        lowest_price,
+      </if>
+      <if test="state != null">
+        `state`,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    values
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="stockCode != null">
+        #{stockCode,jdbcType=VARCHAR},
+      </if>
+      <if test="strategyId != null">
+        #{strategyId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="value != null">
+        #{value,jdbcType=DECIMAL},
+      </if>
+      <if test="volume != null">
+        #{volume,jdbcType=INTEGER},
+      </if>
+      <if test="openPrice != null">
+        #{openPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="highestPrice != null">
+        #{highestPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="lowestPrice != null">
+        #{lowestPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=TINYINT},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+    on duplicate key update 
+    <trim suffixOverrides=",">
+      <if test="id != null">
+        id = #{id,jdbcType=INTEGER},
+      </if>
+      <if test="stockCode != null">
+        stock_code = #{stockCode,jdbcType=VARCHAR},
+      </if>
+      <if test="strategyId != null">
+        strategy_id = #{strategyId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        `type` = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="value != null">
+        `value` = #{value,jdbcType=DECIMAL},
+      </if>
+      <if test="volume != null">
+        volume = #{volume,jdbcType=INTEGER},
+      </if>
+      <if test="openPrice != null">
+        open_price = #{openPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="highestPrice != null">
+        highest_price = #{highestPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="lowestPrice != null">
+        lowest_price = #{lowestPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null">
+        `state` = #{state,jdbcType=TINYINT},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+<!--auto generated by MybatisCodeHelper on 2021-05-19-->
+  <delete id="deleteByUserIdAndStockCode">
+        delete from trade_rule
+        <where>
+            <if test="userId != null">
+                and user_id=#{userId,jdbcType=INTEGER}
+            </if>
+            <if test="stockCode != null">
+                and stock_code=#{stockCode,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </delete>
+
+<!--auto generated by MybatisCodeHelper on 2021-05-19-->
+  <select id="selectAllByUserId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from trade_rule
+    where user_id=#{userId,jdbcType=INTEGER}
+  </select>
+</mapper>
