@@ -6,6 +6,7 @@ import com.trade.tiger.common.enums.TradeEnums;
 import com.trade.tiger.domain.TradeRule;
 import com.trade.tiger.domain.User;
 import com.trade.tiger.mapper.TradeRuleMapper;
+import com.trade.tiger.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,9 +26,17 @@ public class SimulationTradeService {
     @Resource
     TradeRuleMapper ruleMapper;
 
-    public boolean addTrade(TradeRule tradeRule) {
+    @Resource
+    UserMapper userMapper;
+
+    @Resource
+    MessageService messageService;
+
+    public boolean addTrade(TradeRule tradeRule) throws Exception {
         tradeRule.setCreateTime(new Date());
         tradeRule.setUpdateTime(new Date());
+        User user = userMapper.selectByPrimaryKey(tradeRule.getUserId());
+        messageService.send(user.getMobile(), "5375", null);
         return ruleMapper.insert(tradeRule) > 0 ? true : false;
     }
 

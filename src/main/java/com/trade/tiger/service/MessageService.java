@@ -2,6 +2,8 @@ package com.trade.tiger.service;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @description: 通知服务
  * @author: Luozhi
@@ -9,6 +11,6 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public interface MessageService {
-    public String send();
+    public String send(String tel, String templateId, List<Object> templateParams) throws Exception;
 
 }

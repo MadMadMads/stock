@@ -1,37 +1,34 @@
 package com.trade.tiger.service;
 
-import com.aliyun.teaopenapi.models.Config;
+import com.zhenzi.sms.ZhenziSmsClient;
+import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @description:
  * @author: Luozhi
  * @create: 2021-05-17 18:11
  **/
+@Service
 public class MessageServiceImpl implements MessageService {
 
 
-    /**
-     * 使用AK&SK初始化账号Client
-     * @param accessKeyId
-     * @param accessKeySecret
-     * @return Client
-     * @throws Exception
-     */
-    public static com.aliyun.dysmsapi20170525.Client createClient(String accessKeyId, String accessKeySecret) throws Exception {
-        Config config = new Config()
-                // 您的AccessKey ID
-                .setAccessKeyId(accessKeyId)
-                // 您的AccessKey Secret
-                .setAccessKeySecret(accessKeySecret);
-        // 访问的域名
-        config.endpoint = "dysmsapi.aliyuncs.com";
-        return new com.aliyun.dysmsapi20170525.Client(config);
-    }
 
+    ZhenziSmsClient client = new ZhenziSmsClient("https://sms_developer.zhenzikj.com", "109131", "8b1e1f94-4387-49ad-8d36-1b730970b683");
 
     @Override
-    public String send() {
-        return null;
+    public String send(String tel, String templateId, List<Object> templateParams) throws Exception {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("number", tel);
+        params.put("templateId", templateId);
+        String[] templateParams1 = new String[2];
+        templateParams1[0] = "3421";
+        templateParams1[1] = "5分钟";
+        params.put("templateParams", templateParams1);
+        String result = client.send(params);
+        return result;
     }
 }

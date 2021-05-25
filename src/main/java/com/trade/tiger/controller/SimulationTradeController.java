@@ -6,6 +6,7 @@ import com.trade.tiger.domain.TradeRuleVo;
 import com.trade.tiger.domain.User;
 import com.trade.tiger.service.SimulationTradeService;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +24,7 @@ import java.util.Map;
  **/
 @RestController
 @RequestMapping("/trade/web")
+@Slf4j
 public class SimulationTradeController {
     @Resource
     SimulationTradeService simulationTradeService;
@@ -31,7 +33,11 @@ public class SimulationTradeController {
     @ApiOperation(value = "模拟仓添加股票",notes = "必须传入股票代码和用户Id")
     public ResultMsg<Boolean> addSimulationTrade(@RequestBody @Validated TradeRule tradeRule) {
         ResultMsg<Boolean> result = ResultMsg.build();
-        simulationTradeService.addTrade(tradeRule);
+        try {
+            simulationTradeService.addTrade(tradeRule);
+        } catch (Exception e) {
+            log.error("[addSimulationTrade] 遇到异常e:{}",e);
+        }
         return result;
     }
     @ApiOperation(value = "模拟仓删除股票",notes = "必须传入股票代码和用户Id")
