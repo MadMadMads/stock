@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,9 +50,10 @@ public class SimulationTradeController {
     }
     @ApiOperation(value = "获取用户的股票",notes = "必须传入用户Id，分页参数(pageIndex,PageSize)")
     @PostMapping("/query")
-    public ResultMsg<Boolean> querySimulationTrade(@RequestBody @Validated TradeRuleVo tradeRule) {
-        ResultMsg<Boolean> result = ResultMsg.build();
-        simulationTradeService.selectTrade(tradeRule.getUserId(),tradeRule.getPageIndex(),tradeRule.getPageSize());
+    public ResultMsg<List<TradeRule>> querySimulationTrade(@RequestBody @Validated TradeRuleVo tradeRule) {
+        ResultMsg<List<TradeRule>> result = ResultMsg.build();
+        List<TradeRule> tradeRules = simulationTradeService.selectTrade(tradeRule.getUserId(), tradeRule.getPageIndex(), tradeRule.getPageSize());
+        result.setData(tradeRules);
         return result;
     }
     @ApiOperation(value = "获取模拟仓账户的资产信息",notes = "必须传入用户Id,返回的key为老虎等证券结构，value为拥有的资产")

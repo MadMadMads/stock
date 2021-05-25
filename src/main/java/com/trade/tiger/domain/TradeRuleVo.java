@@ -25,7 +25,6 @@ public class TradeRuleVo {
     /**
     * 股票代码
     */
-    @NotNull
     private String stockCode;
 
     /**
