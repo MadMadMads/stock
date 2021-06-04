@@ -1,6 +1,7 @@
 package com.trade.tiger.domain;
 
 import com.sun.istack.NotNull;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -19,12 +20,14 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TradeRuleVo {
+public class Trade {
     private Integer id;
 
     /**
     * 股票代码
     */
+    @NotNull
+    @ApiModelProperty(value="股票代码",name="stockCode",required = true)
     private String stockCode;
 
     /**
@@ -36,6 +39,7 @@ public class TradeRuleVo {
     * 买入用户
     */
     @NotNull
+    @ApiModelProperty(value="买入用户",name="userId",required = true)
     private Integer userId;
 
     /**
@@ -78,8 +82,4 @@ public class TradeRuleVo {
     private Date createTime;
 
     private Date updateTime;
-
-    private Integer pageIndex;
-
-    private Integer pageSize;
 }

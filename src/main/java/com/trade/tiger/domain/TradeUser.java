@@ -1,15 +1,11 @@
 package com.trade.tiger.domain;
 
+import lombok.*;
+
 import java.util.Date;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
- * @description: ${description}
+ * @description: ${description}用户交易记录
  *
  * @author: Luozhi
  *

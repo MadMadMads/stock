@@ -12,10 +12,13 @@
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="fund_account" jdbcType="DECIMAL" property="fundAccount" />
+    <result column="transaction_ account" jdbcType="DECIMAL" property="transactionAccount" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, username, `password`, `name`, mobile, email, create_time, update_time
+    id, username, `password`, `name`, mobile, email, create_time, update_time, fund_account, 
+    `transaction_ account`
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -33,10 +36,12 @@
     <!--@mbg.generated-->
     insert into `user` (username, `password`, `name`, 
       mobile, email, create_time, 
-      update_time)
+      update_time, fund_account, `transaction_ account`
+      )
     values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{mobile,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{updateTime,jdbcType=TIMESTAMP}, #{fundAccount,jdbcType=DECIMAL}, #{transactionAccount,jdbcType=DECIMAL}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.trade.tiger.domain.User" useGeneratedKeys="true">
     <!--@mbg.generated-->
@@ -63,6 +68,12 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="fundAccount != null">
+        fund_account,
+      </if>
+      <if test="transactionAccount != null">
+        `transaction_ account`,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="username != null">
@@ -85,6 +96,12 @@
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fundAccount != null">
+        #{fundAccount,jdbcType=DECIMAL},
+      </if>
+      <if test="transactionAccount != null">
+        #{transactionAccount,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -113,6 +130,12 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="fundAccount != null">
+        fund_account = #{fundAccount,jdbcType=DECIMAL},
+      </if>
+      <if test="transactionAccount != null">
+        `transaction_ account` = #{transactionAccount,jdbcType=DECIMAL},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -125,7 +148,9 @@
       mobile = #{mobile,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      fund_account = #{fundAccount,jdbcType=DECIMAL},
+      `transaction_ account` = #{transactionAccount,jdbcType=DECIMAL}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateBatchSelective" parameterType="java.util.List">
@@ -181,6 +206,20 @@
           </if>
         </foreach>
       </trim>
+      <trim prefix="fund_account = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.fundAccount != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.fundAccount,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="`transaction_ account` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          <if test="item.transactionAccount != null">
+            when id = #{item.id,jdbcType=INTEGER} then #{item.transactionAccount,jdbcType=DECIMAL}
+          </if>
+        </foreach>
+      </trim>
     </trim>
     where id in
     <foreach close=")" collection="list" item="item" open="(" separator=", ">
@@ -201,6 +240,8 @@
       email,
       create_time,
       update_time,
+      fund_account,
+      `transaction_ account`,
     </trim>
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -214,6 +255,8 @@
       #{email,jdbcType=VARCHAR},
       #{createTime,jdbcType=TIMESTAMP},
       #{updateTime,jdbcType=TIMESTAMP},
+      #{fundAccount,jdbcType=DECIMAL},
+      #{transactionAccount,jdbcType=DECIMAL},
     </trim>
     on duplicate key update 
     <trim suffixOverrides=",">
@@ -227,6 +270,8 @@
       email = #{email,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
+      fund_account = #{fundAccount,jdbcType=DECIMAL},
+      `transaction_ account` = #{transactionAccount,jdbcType=DECIMAL},
     </trim>
   </insert>
   <insert id="insertOrUpdateSelective" keyColumn="id" keyProperty="id" parameterType="com.trade.tiger.domain.User" useGeneratedKeys="true">
@@ -257,6 +302,12 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="fundAccount != null">
+        fund_account,
+      </if>
+      <if test="transactionAccount != null">
+        `transaction_ account`,
+      </if>
     </trim>
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -284,6 +335,12 @@
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="fundAccount != null">
+        #{fundAccount,jdbcType=DECIMAL},
+      </if>
+      <if test="transactionAccount != null">
+        #{transactionAccount,jdbcType=DECIMAL},
+      </if>
     </trim>
     on duplicate key update 
     <trim suffixOverrides=",">
@@ -310,6 +367,12 @@
       </if>
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fundAccount != null">
+        fund_account = #{fundAccount,jdbcType=DECIMAL},
+      </if>
+      <if test="transactionAccount != null">
+        `transaction_ account` = #{transactionAccount,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>

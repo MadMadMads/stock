@@ -1,22 +1,20 @@
 package com.trade.tiger.controller;
 
 import com.trade.tiger.common.resultbean.ResultMsg;
-import com.trade.tiger.domain.TradeRule;
-import com.trade.tiger.domain.TradeRuleVo;
-import com.trade.tiger.domain.User;
+import com.trade.tiger.domain.*;
+import com.trade.tiger.mapper.UserMapper;
+import com.trade.tiger.mapper.UserTradeMapper;
 import com.trade.tiger.service.SimulationTradeService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.websocket.server.PathParam;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @description: 模拟仓
@@ -30,39 +28,95 @@ public class SimulationTradeController {
     @Resource
     SimulationTradeService simulationTradeService;
 
+    @Resource
+    UserMapper userMapper;
+
+    @Resource
+    UserTradeMapper userTradeMapper;
+
     @PostMapping("/add")
-    @ApiOperation(value = "模拟仓添加股票",notes = "必须传入股票代码和用户Id")
-    public ResultMsg<Boolean> addSimulationTrade(@RequestBody @Validated TradeRule tradeRule) {
+    @ApiOperation(value = "模拟仓买入股票", notes = "必须传入股票代码和用户Id")
+    public ResultMsg<Boolean> addSimulationTrade(@RequestBody @Validated Trade Trade) {
         ResultMsg<Boolean> result = ResultMsg.build();
         try {
-            simulationTradeService.addTrade(tradeRule);
+            simulationTradeService.addTrade(Trade);
         } catch (Exception e) {
-            log.error("[addSimulationTrade] 遇到异常e:{}",e);
+            log.error("[addSimulationTrade] 遇到异常e:{}", e);
         }
         return result;
     }
-    @ApiOperation(value = "模拟仓删除股票",notes = "必须传入股票代码和用户Id")
+
+    @ApiOperation(value = "模拟仓卖出股票", notes = "必须传入股票代码和用户Id")
+    @ApiResponse(code = 200, message = "@ApiResponses")
     @PostMapping("/del")
-    public ResultMsg<Boolean> delSimulationTrade(@RequestBody @Validated TradeRule tradeRule) {
+    public ResultMsg<Boolean> delSimulationTrade(@RequestBody @Validated Trade trade) {
         ResultMsg<Boolean> result = ResultMsg.build();
-        simulationTradeService.deleteTrade(tradeRule);
-        return result;
-    }
-    @ApiOperation(value = "获取用户的股票",notes = "必须传入用户Id，分页参数(pageIndex,PageSize)")
-    @PostMapping("/query")
-    public ResultMsg<List<TradeRule>> querySimulationTrade(@RequestBody @Validated TradeRuleVo tradeRule) {
-        ResultMsg<List<TradeRule>> result = ResultMsg.build();
-        List<TradeRule> tradeRules = simulationTradeService.selectTrade(tradeRule.getUserId(), tradeRule.getPageIndex(), tradeRule.getPageSize());
-        result.setData(tradeRules);
-        return result;
-    }
-    @ApiOperation(value = "获取模拟仓账户的资产信息",notes = "必须传入用户Id,返回的key为老虎等证券结构，value为拥有的资产")
-    @PostMapping("/money")
-    public ResultMsg<Object> delSimulationTrade(@RequestBody @Validated User user) {
-        ResultMsg<Object> result = ResultMsg.build();
-        Map<String, BigDecimal> money = simulationTradeService.getMoney(user);
-        result.setData(money);
+        boolean b = simulationTradeService.deleteTrade(trade);
+        result.setData(b);
         return result;
     }
 
+    @ApiOperation(value = "获取特定股票持有情况", notes = "必须传入股票Id,用户ID")
+    @PostMapping("/query/one/stock")
+    public ResultMsg<TradeVo> queryOneStock(@RequestBody @Validated TradeVo Trade) {
+        ResultMsg<TradeVo> result = ResultMsg.build();
+        User user = userMapper.selectByPrimaryKey(Trade.getUserId());
+        List<TradeVo> money = simulationTradeService.getMoney(user);
+        TradeVo tradeVo1 = new TradeVo();
+        for (TradeVo tradeVo : money) {
+            if (tradeVo.getStockCode().equals(Trade.getStockCode())) {
+                tradeVo1 = tradeVo;
+            }
+        }
+        result.setData(tradeVo1);
+        return result;
+    }
+
+    @ApiOperation(value = "获取用户的股票", notes = "必须传入用户ID")
+    @PostMapping("/query")
+    public ResultMsg<List<Trade>> querySimulationTrade(@RequestBody @Validated User user) {
+        ResultMsg<List<Trade>> result = ResultMsg.build();
+        List<Trade> Trades = simulationTradeService.selectTrade(user.getId(), 0, Integer.MAX_VALUE);
+        result.setData(Trades);
+        return result;
+    }
+
+    @ApiOperation(value = "增加自选股票", notes = "必须传入用户ID,股票id")
+    @GetMapping("/add/optional/stock")
+    public ResultMsg<Boolean> addTrade(@PathParam("uid") Integer uid, @PathParam("trade_id") Integer trade_id) {
+        ResultMsg<Boolean> result = ResultMsg.build();
+        UserTrade userTrade = new UserTrade();
+        userTrade.setUserId(uid);
+        userTrade.setTradeId(trade_id);
+        int insert = userTradeMapper.insert(userTrade);
+        result.setData(insert > 0 ? true : false);
+        return result;
+    }
+
+    @ApiOperation(value = "获取模拟仓账户的资产信息", notes = "必须传入用户Id,返回的key为老虎等证券结构，value为拥有的资产")
+    @PostMapping("/money")
+    public ResultMsg<AccountVo> getSimulationTrade(@RequestBody @Validated User user) {
+        ResultMsg<AccountVo> result = ResultMsg.build();
+        AccountVo accountVo = new AccountVo();
+        BigDecimal fundAccount = new BigDecimal(0);
+        fundAccount = userMapper.selectByPrimaryKey(user.getId()).getFundAccount();
+        BigDecimal transactionAccount = new BigDecimal(0);
+        transactionAccount = userMapper.selectByPrimaryKey(user.getId()).getTransactionAccount();
+        List<TradeVo> money = simulationTradeService.getMoney(user);
+        accountVo.setFundAccount(fundAccount);
+        accountVo.setTransactionAccount(transactionAccount);
+        accountVo.setMoney(money);
+        accountVo.setTotalAccount(fundAccount.add(transactionAccount));
+        BigDecimal divide = transactionAccount.divide(fundAccount);
+        result.setData(accountVo);
+        return result;
+    }
+
+    @ApiOperation(value = "修改用户的股票", notes = "股票信息")
+    @PostMapping("/edit")
+    public ResultMsg<Boolean> editTrade(@RequestBody @Validated Trade trade) {
+        ResultMsg<Boolean> result = ResultMsg.build();
+        result.setData(simulationTradeService.editTrade(trade));
+        return result;
+    }
 }
