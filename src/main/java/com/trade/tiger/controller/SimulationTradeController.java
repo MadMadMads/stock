@@ -1,5 +1,6 @@
 package com.trade.tiger.controller;
 
+import com.trade.tiger.common.enums.TradeEnums;
 import com.trade.tiger.common.resultbean.ResultMsg;
 import com.trade.tiger.domain.*;
 import com.trade.tiger.mapper.UserMapper;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.websocket.server.PathParam;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,10 +38,10 @@ public class SimulationTradeController {
 
     @PostMapping("/add")
     @ApiOperation(value = "模拟仓买入股票", notes = "必须传入股票代码和用户Id")
-    public ResultMsg<Boolean> addSimulationTrade(@RequestBody @Validated Trade Trade) {
+    public ResultMsg<Boolean> addSimulationTrade(@RequestBody @Validated Trade trade) {
         ResultMsg<Boolean> result = ResultMsg.build();
         try {
-            simulationTradeService.addTrade(Trade);
+            simulationTradeService.addTrade(trade);
         } catch (Exception e) {
             log.error("[addSimulationTrade] 遇到异常e:{}", e);
         }
@@ -83,13 +85,24 @@ public class SimulationTradeController {
 
     @ApiOperation(value = "增加自选股票", notes = "必须传入用户ID,股票id")
     @GetMapping("/add/optional/stock")
-    public ResultMsg<Boolean> addTrade(@PathParam("uid") Integer uid, @PathParam("trade_id") Integer trade_id) {
-        ResultMsg<Boolean> result = ResultMsg.build();
+    public ResultMsg<List<TradeVo>> addTrade(@PathParam("uid") Integer uid, @PathParam("trade_id") Integer trade_id) {
+        ResultMsg<List<TradeVo>> result = ResultMsg.build();
+        List<TradeVo> tradeVos = new ArrayList<>();
         UserTrade userTrade = new UserTrade();
         userTrade.setUserId(uid);
         userTrade.setTradeId(trade_id);
-        int insert = userTradeMapper.insert(userTrade);
-        result.setData(insert > 0 ? true : false);
+        userTradeMapper.insert(userTrade);
+        for (int i = 0; i < 20 ;i++) {
+            TradeVo tradeVo = new TradeVo();
+            tradeVo.setType(TradeEnums.getDescByCode(1));
+            tradeVo.setValue(new BigDecimal("1"));
+            tradeVo.setVolume(123);
+            tradeVo.setStockCode("123");
+            tradeVo.setPrice(new BigDecimal("1"));
+            tradeVo.setUpsAnddowns(new BigDecimal("0.12"));
+            tradeVos.add(tradeVo);
+        }
+        result.setData(tradeVos);
         return result;
     }
 
@@ -118,5 +131,12 @@ public class SimulationTradeController {
         ResultMsg<Boolean> result = ResultMsg.build();
         result.setData(simulationTradeService.editTrade(trade));
         return result;
+    }
+
+    public static void main(String[] args) {
+        Integer i = 20;
+        BigDecimal bigDecimal = new BigDecimal(5);
+        BigDecimal divide = bigDecimal.divide(BigDecimal.valueOf(i));
+        System.out.println(bigDecimal.toString());
     }
 }

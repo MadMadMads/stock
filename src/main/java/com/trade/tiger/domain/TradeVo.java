@@ -61,6 +61,18 @@ public class TradeVo {
 
     private BigDecimal total;
 
+    /**
+     * 买入价
+     */
+    @ApiModelProperty(value="最新价",name="price")
+    private BigDecimal price;
+
+    /**
+     * 买入价
+     */
+    @ApiModelProperty(value="买入价",name="value")
+    private BigDecimal upsAnddowns;
+
     private Byte state;
 
     /**

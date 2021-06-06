@@ -11,6 +11,7 @@ import com.trade.tiger.mapper.TradeDealMapper;
 import com.trade.tiger.mapper.TradeMapper;
 import com.trade.tiger.mapper.UserMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -35,14 +36,15 @@ public class SimulationTradeService {
     @Resource
     TradeDealMapper tradeDealMapper;
 
+    @Transactional(rollbackFor=Exception.class)
     public boolean addTrade(Trade trade) throws Exception {
         trade.setCreateTime(new Date());
         trade.setUpdateTime(new Date());
         User user = userMapper.selectByPrimaryKey(trade.getUserId());
-        user.setTransactionAccount(user.getTransactionAccount().divide(trade.getValue().multiply(new BigDecimal(trade.getVolume()))));
+        user.setTransactionAccount(user.getTransactionAccount().subtract(trade.getValue().multiply(new BigDecimal(trade.getVolume()))));
         TradeDeal tradeDeal = TradeDeal.builder().tradeTime(new Date()).createTime(new Date()).price(trade.getValue())
                 .stockCode(trade.getStockCode()).volume(trade.getVolume())
-                .updateTime(new Date()).type(0).build();
+                .updateTime(new Date()).type(0).userId(trade.getUserId()).build();
         tradeDealMapper.insert(tradeDeal);
         Trade trade1 = tradeMapper.selectByPrimaryKey(trade.getId());
         if (trade1 == null) {
@@ -55,6 +57,7 @@ public class SimulationTradeService {
         return tradeMapper.insert(trade) > 0 ? true : false;
     }
 
+    @Transactional(rollbackFor=Exception.class)
     public boolean deleteTrade(Trade trade) {
         User user = userMapper.selectByPrimaryKey(trade.getUserId());
         user.setTransactionAccount(user.getTransactionAccount().add(trade.getValue().multiply(new BigDecimal(trade.getVolume()))));
@@ -98,7 +101,7 @@ public class SimulationTradeService {
             tradeVo.setTotal(total);
             tradeVo.setVolume(amount);
             if (amount != 0) {
-                tradeVo.setValue(total.divide(new BigDecimal(amount)));
+                tradeVo.setValue(total.subtract(new BigDecimal(amount)));
             } else {
                 tradeVo.setValue(new BigDecimal(0));
             }
@@ -107,8 +110,9 @@ public class SimulationTradeService {
         return list;
     }
 
+    @Transactional(rollbackFor=Exception.class)
     public boolean editTrade(Trade trade) {
-        int i = tradeMapper.updateByPrimaryKey(trade);
+        int i = tradeMapper.updateByStockCodeAndUserId(trade,trade.getStockCode(),trade.getUserId());
         return i > 0 ? true : false;
     }
 }

@@ -1,6 +1,8 @@
 package com.trade.tiger.mapper;
 
 import com.trade.tiger.domain.User;
+import org.apache.ibatis.annotations.Mapper;
+
 import java.util.List;
 
 /**
@@ -8,6 +10,7 @@ import java.util.List;
  * @author: Luozhi
  * @create: 2021-06-03 22:51
  **/
+@Mapper
 public interface UserMapper {
     int deleteByPrimaryKey(Integer id);
 
