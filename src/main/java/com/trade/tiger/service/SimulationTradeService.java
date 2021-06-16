@@ -3,15 +3,14 @@ package com.trade.tiger.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.trade.tiger.common.enums.TradeEnums;
-import com.trade.tiger.domain.Trade;
-import com.trade.tiger.domain.TradeDeal;
-import com.trade.tiger.domain.TradeVo;
-import com.trade.tiger.domain.User;
+import com.trade.tiger.domain.*;
+import com.trade.tiger.mapper.StockInfoMapper;
 import com.trade.tiger.mapper.TradeDealMapper;
 import com.trade.tiger.mapper.TradeMapper;
 import com.trade.tiger.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.nio.cs.FastCharsetProvider;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -34,6 +33,9 @@ public class SimulationTradeService {
     MessageService messageService;
 
     @Resource
+    StockInfoMapper stockInfoMapper;
+
+    @Resource
     TradeDealMapper tradeDealMapper;
 
     @Transactional(rollbackFor=Exception.class)
@@ -41,12 +43,17 @@ public class SimulationTradeService {
         trade.setCreateTime(new Date());
         trade.setUpdateTime(new Date());
         User user = userMapper.selectByPrimaryKey(trade.getUserId());
-        user.setTransactionAccount(user.getTransactionAccount().subtract(trade.getValue().multiply(new BigDecimal(trade.getVolume()))));
+        BigDecimal subtract = user.getTransactionAccount().subtract(trade.getValue().multiply(new BigDecimal(trade.getVolume())));
+        if (subtract.compareTo(new BigDecimal(0)) < 0) {
+            return false;
+        }
+        user.setTransactionAccount(subtract);
+        userMapper.updateByPrimaryKey(user);
         TradeDeal tradeDeal = TradeDeal.builder().tradeTime(new Date()).createTime(new Date()).price(trade.getValue())
                 .stockCode(trade.getStockCode()).volume(trade.getVolume())
                 .updateTime(new Date()).type(0).userId(trade.getUserId()).build();
         tradeDealMapper.insert(tradeDeal);
-        Trade trade1 = tradeMapper.selectByPrimaryKey(trade.getId());
+        Trade trade1 = tradeMapper.selectByUserIdAndStockCode(trade.getUserId(),trade.getStockCode()).stream().findAny().orElse(null);
         if (trade1 == null) {
             tradeMapper.insert(trade);
         } else {
@@ -54,20 +61,33 @@ public class SimulationTradeService {
             tradeMapper.updateByPrimaryKey(trade1);
         }
 //        messageService.send(user.getMobile(), "5375", null);
-        return tradeMapper.insert(trade) > 0 ? true : false;
+        return true;
     }
 
     @Transactional(rollbackFor=Exception.class)
     public boolean deleteTrade(Trade trade) {
+        Trade trade1 = tradeMapper.selectByUserIdAndStockCode(trade.getUserId(),trade.getStockCode()).stream().findAny().orElse(null);
+        if (trade1 == null) {
+            return false;
+        }
+        Long volume = trade1.getVolume() - trade.getVolume();
+        if (volume < 0) {
+            return false;
+        }
+        trade1.setVolume(volume);
         User user = userMapper.selectByPrimaryKey(trade.getUserId());
+        //todo 股票现价乘以数量
         user.setTransactionAccount(user.getTransactionAccount().add(trade.getValue().multiply(new BigDecimal(trade.getVolume()))));
         userMapper.updateByPrimaryKey(user);
-        TradeDeal tradeDeal = tradeDealMapper.selectByPrimaryKey(trade.getId());
-        tradeDeal.setType(1);
-        tradeDealMapper.updateByPrimaryKey(tradeDeal);
-        Trade trade1 = tradeMapper.selectByPrimaryKey(trade.getId());
-        trade1.setVolume(trade1.getVolume() - trade.getVolume());
-        tradeMapper.updateByPrimaryKey(trade1);
+        TradeDeal tradeDeal = TradeDeal.builder().tradeTime(new Date()).createTime(new Date()).price(trade.getValue())
+                .stockCode(trade.getStockCode()).volume(trade.getVolume())
+                .updateTime(new Date()).type(1).userId(trade.getUserId()).build();
+        tradeDealMapper.insert(tradeDeal);
+        if (trade1.getVolume() > 0) {
+            tradeMapper.updateByStockCodeAndUserId(trade1,trade1.getStockCode(),trade1.getUserId());
+        } else {
+            tradeMapper.deleteByUserIdAndStockCode(trade1.getUserId(),trade1.getStockCode());
+        }
         return true;
     }
 
@@ -83,6 +103,8 @@ public class SimulationTradeService {
         Set<String> repeatCode = new HashSet<>();
         for (int i = 0; i < trades.size(); i++) {
             TradeVo tradeVo = new TradeVo();
+            Optional<StockInfo> any = stockInfoMapper.selectByCode(trades.get(i).getStockCode()).stream().findAny();
+            tradeVo.setStockName(any.orElse(new StockInfo()).getName());
             tradeVo.setType(TradeEnums.getDescByCode(trades.get(i).getType()));
             tradeVo.setStockCode(trades.get(i).getStockCode());
             if (repeatCode.contains(tradeVo.getStockCode())) {
@@ -90,7 +112,7 @@ public class SimulationTradeService {
             }
             repeatCode.add(tradeVo.getStockCode());
             BigDecimal total = trades.get(i).getValue().multiply(new BigDecimal(trades.get(i).getVolume()));
-            Integer amount = trades.get(i).getVolume();
+            Long amount = trades.get(i).getVolume();
             for (int j = i + 1; j < trades.size(); j++) {
                 Trade trade = trades.get(j);
                 if (trade.getStockCode().equals(tradeVo.getStockCode())) {
@@ -101,7 +123,7 @@ public class SimulationTradeService {
             tradeVo.setTotal(total);
             tradeVo.setVolume(amount);
             if (amount != 0) {
-                tradeVo.setValue(total.subtract(new BigDecimal(amount)));
+                tradeVo.setValue(total.divide(new BigDecimal(amount)));
             } else {
                 tradeVo.setValue(new BigDecimal(0));
             }

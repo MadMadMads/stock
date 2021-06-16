@@ -37,7 +37,7 @@ public class TradeDeal {
     private BigDecimal price;
 
     @ApiModelProperty(value = "")
-    private Integer volume;
+    private Long volume;
 
     /**
      * 通知类型

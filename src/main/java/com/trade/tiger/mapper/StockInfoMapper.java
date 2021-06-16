@@ -1,4 +1,5 @@
 package com.trade.tiger.mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.trade.tiger.domain.StockInfo;
 import org.apache.ibatis.annotations.Mapper;
@@ -31,4 +32,9 @@ public interface StockInfoMapper {
     int updateByPrimaryKey(StockInfo record);
 
     int updateBatchSelective(List<StockInfo> list);
+
+    List<StockInfo> selectByCode(@Param("code")String code);
+
+
+
 }

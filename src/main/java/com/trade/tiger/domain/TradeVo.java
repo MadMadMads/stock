@@ -29,6 +29,9 @@ public class TradeVo {
     @ApiModelProperty(value="股票代码",name="stockCode",required = true)
     private String stockCode;
 
+    @ApiModelProperty(value="股票名称",name="stockName",required = true)
+    private String stockName;
+
     /**
     * 算法策略
     */
@@ -57,7 +60,7 @@ public class TradeVo {
     * 买入量
     */
     @ApiModelProperty(value="买入量",name="volume")
-    private Integer volume;
+    private Long volume;
 
     private BigDecimal total;
 
@@ -68,10 +71,16 @@ public class TradeVo {
     private BigDecimal price;
 
     /**
-     * 买入价
+     * 今日涨跌
      */
-    @ApiModelProperty(value="买入价",name="value")
+    @ApiModelProperty(value="今日涨跌")
     private BigDecimal upsAnddowns;
+
+    /**
+     * 持有率
+     */
+    @ApiModelProperty(value="持有率")
+    private BigDecimal holdingRate;
 
     private Byte state;
 

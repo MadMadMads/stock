@@ -1,5 +1,6 @@
 package com.trade.tiger.controller;
 
+import com.trade.tiger.common.enums.ResultStatus;
 import com.trade.tiger.common.enums.TradeEnums;
 import com.trade.tiger.common.resultbean.ResultMsg;
 import com.trade.tiger.domain.*;
@@ -41,7 +42,10 @@ public class SimulationTradeController {
     public ResultMsg<Boolean> addSimulationTrade(@RequestBody @Validated Trade trade) {
         ResultMsg<Boolean> result = ResultMsg.build();
         try {
-            simulationTradeService.addTrade(trade);
+            boolean b = simulationTradeService.addTrade(trade);
+            if (b == false) {
+                result = ResultMsg.error(ResultStatus.USER_NOT_MONEY);
+            }
         } catch (Exception e) {
             log.error("[addSimulationTrade] 遇到异常e:{}", e);
         }
@@ -54,7 +58,9 @@ public class SimulationTradeController {
     public ResultMsg<Boolean> delSimulationTrade(@RequestBody @Validated Trade trade) {
         ResultMsg<Boolean> result = ResultMsg.build();
         boolean b = simulationTradeService.deleteTrade(trade);
-        result.setData(b);
+        if (b == false) {
+            result = ResultMsg.error(ResultStatus.USER_NOT_STOCK);
+        }
         return result;
     }
 
@@ -96,9 +102,10 @@ public class SimulationTradeController {
             TradeVo tradeVo = new TradeVo();
             tradeVo.setType(TradeEnums.getDescByCode(1));
             tradeVo.setValue(new BigDecimal("1"));
-            tradeVo.setVolume(123);
+            tradeVo.setVolume(new Long(123));
             tradeVo.setStockCode("123");
             tradeVo.setPrice(new BigDecimal("1"));
+            tradeVo.setHoldingRate(new BigDecimal("0.44"));
             tradeVo.setUpsAnddowns(new BigDecimal("0.12"));
             tradeVos.add(tradeVo);
         }
@@ -131,12 +138,5 @@ public class SimulationTradeController {
         ResultMsg<Boolean> result = ResultMsg.build();
         result.setData(simulationTradeService.editTrade(trade));
         return result;
-    }
-
-    public static void main(String[] args) {
-        Integer i = 20;
-        BigDecimal bigDecimal = new BigDecimal(5);
-        BigDecimal divide = bigDecimal.divide(BigDecimal.valueOf(i));
-        System.out.println(bigDecimal.toString());
     }
 }

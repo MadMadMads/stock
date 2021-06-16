@@ -55,7 +55,7 @@ public class Trade {
     /**
     * 买入量
     */
-    private Integer volume;
+    private Long volume;
 
     /**
     * 初始价格

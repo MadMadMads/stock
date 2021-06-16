@@ -31,6 +31,8 @@ public interface TradeMapper {
 
     List<Trade> selectByUserIdAndStockCode(@Param("userId")Integer userId,@Param("stockCode")String stockCode);
 
+    int updateByStockCodeAndUserId(@Param("updated")Trade updated,@Param("stockCode")String stockCode,@Param("userId")Integer userId);
+
 
 
     int updateByPrimaryKeySelective(Trade record);
@@ -40,9 +42,4 @@ public interface TradeMapper {
     int updateBatchSelective(List<Trade> list);
 
     List<Trade> selectAllByUserId(@Param("userId")Integer userId);
-
-    int updateByStockCodeAndUserId(@Param("updated")Trade updated,@Param("stockCode")String stockCode,@Param("userId")Integer userId);
-
-
-
 }

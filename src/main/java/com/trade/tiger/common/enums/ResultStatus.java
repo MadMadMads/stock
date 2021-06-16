@@ -21,6 +21,7 @@ public enum ResultStatus {
     DATA_ALREADY_PEXISTS(10008, "数据已经存在"),
 
 
+
     /**
      * 注册登录
      */
@@ -41,6 +42,8 @@ public enum ResultStatus {
     MOBILE_NOT_EXIST (30009,"手机号不存在!"),
     PASSWORD_ERROR (30010,"密码错误!"),
     USER_NOT_EXIST(30011,"用户不存在！"),
+    USER_NOT_MONEY(30012,"金额不足！"),
+    USER_NOT_STOCK(30012,"未拥有该数量股票！"),
     USER_NOT_Authorization(30012,"未取得授权！");
 
 

@@ -13,12 +13,12 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="fund_account" jdbcType="DECIMAL" property="fundAccount" />
-    <result column="transaction_ account" jdbcType="DECIMAL" property="transactionAccount" />
+    <result column="transaction_account" jdbcType="DECIMAL" property="transactionAccount" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, username, `password`, `name`, mobile, email, create_time, update_time, fund_account, 
-    `transaction_ account`
+    `transaction_account`
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -36,7 +36,7 @@
     <!--@mbg.generated-->
     insert into `user` (username, `password`, `name`, 
       mobile, email, create_time, 
-      update_time, fund_account, `transaction_ account`
+      update_time, fund_account, `transaction_account`
       )
     values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{mobile,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
@@ -72,7 +72,7 @@
         fund_account,
       </if>
       <if test="transactionAccount != null">
-        `transaction_ account`,
+        `transaction_account`,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -134,7 +134,7 @@
         fund_account = #{fundAccount,jdbcType=DECIMAL},
       </if>
       <if test="transactionAccount != null">
-        `transaction_ account` = #{transactionAccount,jdbcType=DECIMAL},
+        `transaction_account` = #{transactionAccount,jdbcType=DECIMAL},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -150,7 +150,7 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       fund_account = #{fundAccount,jdbcType=DECIMAL},
-      `transaction_ account` = #{transactionAccount,jdbcType=DECIMAL}
+      `transaction_account` = #{transactionAccount,jdbcType=DECIMAL}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateBatchSelective" parameterType="java.util.List">
@@ -213,7 +213,7 @@
           </if>
         </foreach>
       </trim>
-      <trim prefix="`transaction_ account` = case" suffix="end,">
+      <trim prefix="`transaction_account` = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
           <if test="item.transactionAccount != null">
             when id = #{item.id,jdbcType=INTEGER} then #{item.transactionAccount,jdbcType=DECIMAL}
@@ -241,7 +241,7 @@
       create_time,
       update_time,
       fund_account,
-      `transaction_ account`,
+      `transaction_account`,
     </trim>
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -271,7 +271,7 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       fund_account = #{fundAccount,jdbcType=DECIMAL},
-      `transaction_ account` = #{transactionAccount,jdbcType=DECIMAL},
+      `transaction_account` = #{transactionAccount,jdbcType=DECIMAL},
     </trim>
   </insert>
   <insert id="insertOrUpdateSelective" keyColumn="id" keyProperty="id" parameterType="com.trade.tiger.domain.User" useGeneratedKeys="true">
@@ -306,7 +306,7 @@
         fund_account,
       </if>
       <if test="transactionAccount != null">
-        `transaction_ account`,
+        `transaction_account`,
       </if>
     </trim>
     values
@@ -372,7 +372,7 @@
         fund_account = #{fundAccount,jdbcType=DECIMAL},
       </if>
       <if test="transactionAccount != null">
-        `transaction_ account` = #{transactionAccount,jdbcType=DECIMAL},
+        `transaction_account` = #{transactionAccount,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
